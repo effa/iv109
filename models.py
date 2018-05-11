@@ -12,6 +12,7 @@ class ProxyStudent:
         self.p_learn = p_learn
         self.p_good = p_good
         self.skill = p_init
+        self.skills_history = [self.skill]
 
     def update_skill(self, performance):
         """Called when student answers a question."""
@@ -29,6 +30,8 @@ class ProxyStudent:
         # Learning
         self.skill += (1 - self.skill) * self.p_learn
 
+        self.skills_history.append(self.skill)
+
 
 class TrueStudent:
     def __init__(self, p_init, p_learn, p_good, max_answers=20):
@@ -43,13 +46,14 @@ class TrueStudent:
         self.skill = int(random() < p_init)
         self.n_answers = 0
         self.max_answers = max_answers
+        self.skills_history = [self.skill]
+        #self.answers_history = []
 
     def update_skill(self):
         """Called when student answers a question."""
-        if self.skill == 1:
-            return
-        if random() < self.p_learn:
+        if self.skill == 0 and random() < self.p_learn:
             self.skill = 1
+        self.skills_history.append(self.skill)
 
     def answer(self):
         """Return a performance for a new question"""
@@ -71,12 +75,12 @@ def proxy_objective_successful_tasks(students):
     return sum([sum(s.history) for s in students])
 
 
-def proxy_objective_natural_success(students, optimum=0.8):
-    return sum([-abs(s.skill - optimum) for s in students])
+def proxy_objective_target_skill(students, target=0.8):
+    return sum([-abs(s.skill - target) for s in students])
 
 
 class LearningSystem:
-    def __init__(self, threshold, i_student,
+    def __init__(self, i_student=0, threshold=0.5,
                  proxy_objective=None, threshold_delta=0.05):
         self.threshold = threshold
         self.objectives = None
@@ -90,8 +94,9 @@ class LearningSystem:
         Will affect local attributes. (threshold)
         """
         assert self.proxy_objective is not None
-        thresholds = [self.threshold - self.threshold_delta,
-                      self.threshold + self.threshold_delta]
+        thresholds = [
+            max(0, self.threshold - self.threshold_delta),
+            min(1, self.threshold + self.threshold_delta)]
         groups = [true_students[:len(true_students) // 2],
                   true_students[len(true_students) // 2:]]
 
@@ -101,9 +106,9 @@ class LearningSystem:
             objectives.append(self.proxy_objective(students))
 
         if objectives[1] >= objectives[0]:
-            self.threshold = min(1 - self.threshold_delta, self.threshold + self.threshold_delta)
+            self.threshold = min(1, self.threshold + self.threshold_delta)
         else:
-            self.threshold = max(self.threshold_delta, self.threshold - self.threshold_delta)
+            self.threshold = max(0, self.threshold - self.threshold_delta)
         self.objectives = objectives #max(objectives)
 
     def process_student(self, true_student, threshold=None):
@@ -133,6 +138,7 @@ BKT_PARAMS = [
     BktParams(p_init=0.5, p_learn=0.55, p_good=(0.1, 0.8)),
     BktParams(p_init=0.6, p_learn=0.15, p_good=(0.3, 0.7)),
 ]
+N_STUDENTS = len(BKT_PARAMS)
 
 
 #def create_proxy_student(true_student):
