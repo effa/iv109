@@ -20,6 +20,7 @@ def simulate_student(i_student=0, threshold=0.9):
 
 def simulate_system(
         proxy_objective=proxy_objective_solved_tasks,
+        noise=0,
         i_student=0,
         n_iters=50,
         n_students=50):
@@ -29,7 +30,7 @@ def simulate_system(
     mastery = []
     for i_iter in range(n_iters):
         true_students = create_students(n_students, i_student)
-        als.do_iteration(true_students)
+        als.do_iteration(true_students, noise=noise)
         thresholds.append(als.threshold)
         mastery.append(np.mean([s.n_answers < s.max_answers for s in true_students]))
         objectiveMinus.append(als.objectives[0])
