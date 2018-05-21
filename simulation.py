@@ -23,13 +23,14 @@ def simulate_system(
         noise=0,
         i_student=0,
         n_iters=50,
-        n_students=50):
+        n_students=50,
+        patience=3):
     als = LearningSystem(i_student=i_student, proxy_objective=proxy_objective)
     thresholds = []
     objectivePlus, objectiveMinus = [], []
     mastery = []
     for i_iter in range(n_iters):
-        true_students = create_students(n_students, i_student)
+        true_students = create_students(n_students, i_student, patience=patience)
         als.do_iteration(true_students, noise=noise)
         thresholds.append(als.threshold)
         mastery.append(np.mean([s.n_answers < s.max_answers for s in true_students]))
@@ -43,8 +44,8 @@ def simulate_system(
     return results
 
 
-def create_students(n_students, i_student):
+def create_students(n_students, i_student, patience=3):
     return [
-        create_true_student(i_student)
+        create_true_student(i_student, patience=patience)
         for _ in range(n_students)
     ]

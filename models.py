@@ -35,7 +35,7 @@ class ProxyStudent:
 
 
 class TrueStudent:
-    def __init__(self, p_init, p_learn, p_good, max_answers=20):
+    def __init__(self, p_init, p_learn, p_good, max_answers=20, patience=3):
         """
         Args:
             p_learn = prabability of getting learned after 1 question
@@ -49,6 +49,7 @@ class TrueStudent:
         self.max_answers = max_answers
         self.skills_history = [self.skill]
         self.answers_history = []
+        self.patience = patience
 
     def update_skill(self):
         """Called when student answers a question."""
@@ -66,7 +67,7 @@ class TrueStudent:
         return performance
 
     def leave(self, mastery_decision):
-        if sum(self.answers_history[-3:]) == 3:
+        if sum(self.answers_history[-self.patience:]) == self.patience:
             return True
         return mastery_decision or self.n_answers >= self.max_answers
 
@@ -175,5 +176,5 @@ def create_proxy_student(i, noise=0.2):
     #                    min(params['p_good'][1] + noise, 0.99))
     return ProxyStudent(**params)
 
-def create_true_student(i):
-    return TrueStudent(**BKT_PARAMS[i]._asdict())
+def create_true_student(i, patience=3):
+    return TrueStudent(**BKT_PARAMS[i]._asdict(), patience=patience)
