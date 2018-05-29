@@ -17,8 +17,13 @@ def plot_student(student_df):
     student_df.answers.plot(ax=ax, marker='o', linestyle='')
 
 
-def plot_system(results):
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, figsize=(8, 8), sharex=True)
-    results.thresholds.plot(ax=ax1, ylim=(0, 1.01), legend=True)
-    results[['objectiveMinus', 'objectivePlus']].plot(ax=ax2)
-    results.mastery.plot(ax=ax3, ylim=(0, 1.01), legend=True)
+def plot_system(results, details=True):
+    if details:
+        fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, figsize=(8, 8), sharex=True)
+        results.thresholds.plot(ax=ax1, ylim=(0, 1.01), legend=True)
+        results[['objectiveMinus', 'objectivePlus']].plot(ax=ax2)
+        results.mastery.plot(ax=ax3, ylim=(0, 1.01), legend=True)
+    else:
+        ax = results.thresholds.plot(ylim=(0, 1.01))
+        ax.set_xlabel('weeks')
+        ax.set_ylabel('threshold')
