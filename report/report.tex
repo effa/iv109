@@ -76,8 +76,9 @@ Dovednost studentů modelujeme pomocí \emph{BKT}, tj. student buď procvičovan
 % \subsection{Model systému}
 Modelovaný výukový systém potřebuje odhadovat aktuální dovednost studenta, tj. musí sám obsahovat model studenta (podobně jako v \cite{bkt-optimal-worst}). Model studenta uvnitř systému nazýváme \emph{proxy student} (a studenta vně systému nazýváme jako \emph{skutečný student}). Systém modeluje pouze dovednost studentů, nikoliv trpělivost. Na druhou stranu je modelovaný scénář optimistický v tom, že struktura modelu dovedností proxy studenta přesně odpovídá struktuře modelu skutečného studenta. Systém nezná jednotlivé podpopulace studentů, takže pro BKT využívá průměrné hodnoty parametrů. Pro analýzy pak přidáváme ještě parametr udávající šum v odhadu parametrů (konstantní posun ve všech parametrech oproti průměru v populaci).
 
-Systém dále obsahuje hranici pro mastery -- pokud pravděpodobnost znalosti konceptu přesáhne tuto hranici, systém deklaruje mastery a student úspěšně prošel. Tuto hranici se systém snaží v dlouhodobém horizontu (týdny) optimalizovat pomocí série AB experimentů. V každém týdnu do systému přijde N nových studentů, systém je rozdělí do dvou skupin a pro každou z nich používá jinou hranici pro mastery (aktuální hranice $\pm$ malý posun). Každému studentovi dává úlohy tak dlouho, dokud buď chce řešit, nebo dokud systém nedeklaruje mastery. Po zpracování všech N studentů systém použije metriku pro vyhodnocení kvality systému při těchto dvou hranicích a posune aktuální hranici směrem k~lepší z~těchto dvou možností.
+Systém dále obsahuje hranici pro mastery -- pokud pravděpodobnost znalosti konceptu přesáhne tuto hranici, systém deklaruje mastery a student úspěšně prošel. Tuto hranici se systém snaží v dlouhodobém horizontu (týdny) optimalizovat pomocí série AB experimentů. V každém týdnu do systému přijde $N$ nových studentů, systém je rozdělí do dvou skupin a pro každou z nich používá jinou hranici pro mastery (aktuální hranice $\pm$ malý posun). Každému studentovi dává úlohy tak dlouho, dokud buď chce řešit, nebo dokud systém nedeklaruje mastery. Po zpracování všech $N$ studentů systém použije metriku pro vyhodnocení kvality systému při těchto dvou hranicích a posune aktuální hranici směrem k~lepší z~těchto dvou možností.
 
+\clearpage
 V analýzách uvedených v této zprávě používáme následující metriku: rozdíl počtu úloh se slabým a silným výkonem. (Slabý výkon odpovídá tomu, že se student učí, takže počet těchto pokusů chceme maximalizovat, zatímco silný výkon znamená, že už to nejspíš umí a nudí se, což chceme naopak minimalizovat.) Systém provádí mnoho iterací takovýchto AB experimentů (vždy na nových studentech) ve snaze postupně vylepšovat chování systému změnou hranice pro mastery.
 
 %%%%%%%%%%%%%%%% begin figure %%%%%%%%%%%%%%%%%%%
@@ -125,7 +126,7 @@ Na tomto výsledku ilustrujeme především to, že náš model se chová logick
 %%%%%%%%%%%%%%%% end figure %%%%%%%%%%%%%%%%%%%
 
 
-Proto jsme přistoupili k simulaci dalších proxy metrik. Vyzkoušeli jsme maximalizovat počet úspěšně vyřešených úloh, což dopadlo stejně, jako v předchozí metrice. Dále jsme vyzkoušeli cílit na proxy dovednost rovnou konkrétnímu číslu (např. 0.85). Výsledek je vyobrazen na obrázku \ref{fig:thresholds-target-skill}.
+Proto jsme přistoupili k simulaci dalších proxy metrik. Vyzkoušeli jsme maximalizovat počet úspěšně vyřešených úloh, což dopadlo stejně, jako v předchozí metrice. Dále jsme vyzkoušeli cílit na proxy dovednost rovnou konkrétnímu číslu (např. $0.85$). Výsledek je vyobrazen na obrázku \ref{fig:thresholds-target-skill}.
 Tato metrika už se chovala poměrně hezky a k anomáliím nedocházelo. Avšak opět se jedná o poměrně logický důsledek.
 
 %%%%%%%%%%%%%%%% begin figure %%%%%%%%%%%%%%%%%%%
@@ -139,7 +140,7 @@ Tato metrika už se chovala poměrně hezky a k anomáliím nedocházelo. Avšak
 
 
 Pro následující analýzy jsme nakonec použili proxy metriku, která se snaží maximalizovat rozdíl efektivních (student se něco naučil) a neefektivních otázek (student se nic nenaučil).
-U této metriky už není tak zřejmé, jak by se měl chovat. Při základních parametrech, kdy neprovádíme umělé zašumění dat, se metrika chová rozumně
+U této metriky už není tak zřejmé, jak by se měla chovat. Při základních parametrech, kdy neprovádíme umělé zašumění dat, se metrika chová rozumně
 (Obrázek \ref{fig:thresholds-effective-tasks}).
 Začali jsme tedy zkoumat, jak se metrika chová, pokud výukový systém nemá o studentech úplná data.
 
